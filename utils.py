@@ -133,6 +133,11 @@ def translationToMarkdown(content):
 	#print content
 	return content
 
+
+'''
+下面全部为单元测试:
+'''
+
 if __name__ == '__main__':
 	html = '''
 <p>上节提出了range和xrange的效率问题，这节我们来探究其中的原因</p>  <p>&#160;</p>  <p><strong><font size="4">yield的使用</font></strong></p>  <p>&#160;</p>  <p>我们看下面的程序：</p>  <div style="border-bottom: #cccccc 1px solid; border-left: #cccccc 1px solid; padding-bottom: 5px; background-color: #f5f5f5; padding-left: 5px; padding-right: 5px; border-top: #cccccc 1px solid; border-right: #cccccc 1px solid; padding-top: 5px" class="cnblogs_code">   <pre><span style="color: #008000">#</span><span style="color: #008000">coding: utf-8</span>
