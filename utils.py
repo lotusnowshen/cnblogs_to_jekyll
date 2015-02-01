@@ -10,38 +10,34 @@ import re
 '''
 def filterParaTag(html):
 	#整段加粗
-	def filterPTagCallbackByLine(matchobj):
-		text = matchobj.group()
-		assert text
-		inner_text = re.findall('<strong><font.*?>(.*?[\s\S]*?)</font></strong>', text)
+	def filterPTagCallbackByLine(content):
+		inner_text = re.findall('<strong><font.*?>(.*?[\s\S]*?)</font></strong>', content)
 		assert inner_text and len(inner_text) == 1
 		text = '''%s\n========''' % (inner_text[0])
 		return text
-	def filterPTagCallbackByLine2(matchobj):
-		text = matchobj.group()
-		assert text
-		inner_text = re.findall('<font.*?><strong>(.*?[\s\S]*?)</strong></font>', text)
+	def filterPTagCallbackByLine2(content):
+		inner_text = re.findall('<font.*?><strong>(.*?[\s\S]*?)</strong></font>', content)
 		assert inner_text and len(inner_text) == 1
 		text = '''%s\n========''' % (inner_text[0])
 		return text
 
-	#简单的去除即可
 	def filterPTagCallback(matchobj):
 		text = matchobj.group() #去除p内部的文本
-		#print text
+		print text
 		assert text
 		inner_text = re.findall('<p>(.*?[\s\S]*?)</p>', text)
 		assert inner_text and len(inner_text) == 1
 		inner_text = inner_text[0]
-		if re.match('<strong><font.*?>(.*?[\s\S]*?)</font></strong>', html):
+		if re.match('<strong><font.*?>(.*?[\s\S]*?)</font></strong>', inner_text):
 			return filterPTagCallbackByLine(inner_text)
-		elif re.match('<font.*?><strong>(.*?[\s\S]*?)</strong></font>', html):
+		elif re.match('<font.*?><strong>(.*?[\s\S]*?)</strong></font>', inner_text):
 			return filterPTagCallbackByLine2(inner_text)
 		return inner_text #原样返回
 	return re.sub('<p>(.*?[\s\S]*?)</p>', filterPTagCallback, html)
 
-if __name__ == '__main__':
-	html = ' <p><font size="4"><strong>xrange的模拟实现</strong></font></p> '
+if __name__ == '__main__#':
+	html = '<p><font size="4"><strong>xrange的模拟实现</strong></font></p>'
+	#print re.match('<p><font.*?><strong>(.*?[\s\S]*?)</strong></font></p>', html)
 	print filterParaTag(html)
 
 #将div块转化为代码块
@@ -137,7 +133,7 @@ def translationToMarkdown(content):
 	#print content
 	return content
 
-if __name__ == '__main__#':
+if __name__ == '__main__':
 	html = '''
 <p>上节提出了range和xrange的效率问题，这节我们来探究其中的原因</p>  <p>&#160;</p>  <p><strong><font size="4">yield的使用</font></strong></p>  <p>&#160;</p>  <p>我们看下面的程序：</p>  <div style="border-bottom: #cccccc 1px solid; border-left: #cccccc 1px solid; padding-bottom: 5px; background-color: #f5f5f5; padding-left: 5px; padding-right: 5px; border-top: #cccccc 1px solid; border-right: #cccccc 1px solid; padding-top: 5px" class="cnblogs_code">   <pre><span style="color: #008000">#</span><span style="color: #008000">coding: utf-8</span>
 
