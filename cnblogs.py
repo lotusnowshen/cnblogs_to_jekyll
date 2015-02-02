@@ -2,13 +2,14 @@
 import xml.etree.cElementTree as ET
 from html_utils import translationToMarkdown
 from datetime import datetime
+from pinyin import PinYin
 
 class ParseCnblogsToMarkdown:
 	def __init__(self, filename):
 		self.filename = filename
-
-	def getTree(self):
-		self.tree = ET.ElementTree(file=self.filename)
+		self.pinyin = PinYin()
+		self.pinyin.load_word()
+		self.tree = ET.ElementTree(file=filename)
 
 	def getBlogs(self):
 		self.blogs = []
@@ -31,20 +32,19 @@ class ParseCnblogsToMarkdown:
 
 	def saveFile(self):
 		for item in self.blogs:
-			#print item['content']
-			#print item['time']
 			create_time = item['time']
+			title = item['title']
 			year = create_time.year
 			month = create_time.month
 			day = create_time.day
-			title = '%s-%s-%s-%s' % (year, month, day, item['title'])
+			#title = self.pinyin.hanzi2pinyin_split(string=title, split="-")
+			title = '%s-%s-%s-%s' % (year, month, day, title)
 			print title
 
 
 
 if __name__ == '__main__':
 	parser = ParseCnblogsToMarkdown('CNBlogs_BlogBackup_1_201409_201501.xml')
-	parser.getTree()
 	parser.getBlogs()
 	parser.parseBlog()
 	parser.saveFile()
