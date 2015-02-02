@@ -111,7 +111,45 @@ def filterStrongTag(html):
 		return result
 	return re.sub('<strong>(.*?[\s\S]*?)</strong>', deleteStrongTagCallback, html)
 
+def transLink(html):
+	#[流程图](https://www.zybuluo.com/mdeditor?url=https://www.zybuluo.com/static/editor/md-help.markdown#7-流程图)
+	#<a href="http://www.cnblogs.com/inevermore/p/4014429.html" target="_blank">类的成员函数指针和mem_fun适配器的用法</a>
+	def filterLinksCallback(matchobj):
+		text = matchobj.group()
+		inner_text = re.findall('<a\shref="(.*?)"\starget="_blank">(.*?)</a>', text)
+		assert inner_text and len(inner_text) == 1
+		link = inner_text[0][0]
+		name = inner_text[0][1]
+		# print inner_text
+		# print name
+		# name = name.encode('utf-8')
+		# link = link.encode('utf-8')
+		#print name
+		result = '[%s](%s)' % (name, link)
+		#result = result.encode('utf-8')
+		#print result
+		return result
+
+	return re.sub('<a\shref="(.*?)"\starget="_blank">(.*?)</a>', filterLinksCallback, html)
+
+if __name__ == '__main__':
+	s = '<a href="http://www.cnblogs.com/inevermore/p/4014429.html" target="_blank">类的成员函数指针和mem_fun适配器的用法</a>'
+	print transLink(s)
+
+#<blockquote> </blockquote>
+def filterBlockQuote(html):
+	html = re.sub('<blockquote>', '', html)
+	html = re.sub('</blockquote>', '', html)
+	return html
+
+
 def transHtmlEntries(html):
+	html = html.replace('&nbsp;',' ')
+	html = html.replace('&lt;', '<')
+	html = html.replace('&gt;', '>')
+	html = html.replace('&amp;', '&')
+	html = html.replace('&quot;', '"')
+	html = html.replace('&nbsp;', ' ')
 	html = html.replace('&#160;', ' ')
 	return html
 
@@ -123,7 +161,10 @@ def translationToMarkdown(content):
 	content = filterStrongTag(content)
 	content = divToCode(content)
 	content = transHtmlEntries(content)
+	content = transLink(content)
+	content = filterBlockQuote(content)
 	#print content
+	#content = content.encode('utf-8')
 	return content
 
 

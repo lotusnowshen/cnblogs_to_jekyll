@@ -3,6 +3,7 @@ import xml.etree.cElementTree as ET
 from html_utils import translationToMarkdown
 from datetime import datetime
 from pinyin import TitleTranslation
+import os
 
 class ParseCnblogsToMarkdown:
 	def __init__(self, filename):
@@ -42,6 +43,8 @@ tags : [C++, Python, Socket, Tornado]
 
 
 	def saveFile(self):
+		path = "blogs"
+		os.mkdir(path)
 		for item in self.blogs:
 			create_time = item['time']
 			title = self.pinyin.translate(item['title'])
@@ -52,7 +55,7 @@ tags : [C++, Python, Socket, Tornado]
 			title = '%s-%s-%s-%s.md' % (year, month, day, title)
 			print title
 			try:
-				fp = open(title, 'w')
+				fp = open(path+'/'+title, 'w')
 				fp.write(item['content'].encode('utf-8'))
 				fp.close()
 			except Exception, e:
