@@ -28,16 +28,15 @@ class ParseCnblogsToMarkdown:
 	def parseBlog(self):
 		for item in self.blogs:
 			item['content'] = translationToMarkdown(item['content'])
-			content = '''
----
+			content = '''---
 layout: post
+title: %s
 category : C++
 tagline: "Supporting tagline"
 tags : [C++, Python, Socket, Tornado]
 ---
-
 %s
-			''' % (item['content'])
+			''' % (item['title'], item['content'])
 			item['content'] = content
 
 
@@ -54,10 +53,11 @@ tags : [C++, Python, Socket, Tornado]
 			print title
 			try:
 				fp = open(title, 'w')
-				fp.write(item['content'])
+				fp.write(item['content'].encode('utf-8'))
 				fp.close()
 			except Exception, e:
 				print 'error'
+				raise e
 				continue
 
 if __name__ == '__main__':

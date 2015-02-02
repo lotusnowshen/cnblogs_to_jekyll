@@ -45,7 +45,9 @@ class PinYin(object):
         for char in word:
             key = '%X' % ord(char)
             if int(key, 16) <= 0x007F:
-                result.append(char.encode('utf-8'))
+                char = char.encode('utf-8')
+                if char not in ['=', '/', '_', '-', '(', ')']:
+                    result.append(char)
             else:
                 flag = False
                 result.append(self.word_dict.get(key, char).split()[0][:-1].lower())
