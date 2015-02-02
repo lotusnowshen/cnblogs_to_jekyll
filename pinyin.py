@@ -1,5 +1,4 @@
 #coding: utf-8
-from xpinyin import Pinyin
 import jieba
 import os.path
 
