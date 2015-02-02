@@ -1,17 +1,9 @@
-#!/usr/bin/env python
-# -*- coding:utf-8 -*-
-
-"""
-    Author:cleverdeng
-    E-mail:clverdeng@gmail.com
-"""
-
-__version__ = '0.9'
-__all__ = ["PinYin"]
-
+#coding: utf-8
+from xpinyin import Pinyin
+import jieba
 import os.path
 
-
+#下面使用了一部分开源项目的源码，见https://github.com/cleverdeng/pinyin.py
 class PinYin(object):
     def __init__(self, dict_file='word.data'):
         self.word_dict = {}
@@ -39,23 +31,46 @@ class PinYin(object):
         
         for char in string:
             key = '%X' % ord(char)
-            result.append(self.word_dict.get(key, char).split()[0][:-1].lower())
-
+            if int(key, 16) <= 0x007F:
+                result.append(char.encode('utf-8'))
+            else:
+                result.append(self.word_dict.get(key, char).split()[0][:-1].lower())
         return result
 
+    def transWordToPinyin(self, word):
+        result = []
+        if not isinstance(word, unicode):
+            word = word.decode("utf-8")
+        
+        flag = True
+        for char in word:
+            key = '%X' % ord(char)
+            if int(key, 16) <= 0x007F:
+                result.append(char.encode('utf-8'))
+            else:
+                flag = False
+                result.append(self.word_dict.get(key, char).split()[0][:-1].lower())
+        result = ''.join(result)
+        #print result
+        return result
 
-    def hanzi2pinyin_split(self, string="", split=""):
-        result = self.hanzi2pinyin(string=string)
-        if split == "":
-            return result
-        else:
-            return split.join(result)
+class TitleTranslation:
+    def __init__(self):
+        self.pinyin = PinYin()
+        self.pinyin.load_word()
+    def translate(self, content):
+        words = jieba.cut(content)
+        result = []
+        for word in words:
+            #print word
+            word = self.pinyin.transWordToPinyin(word)
+            word = word.lower()
+            result.append(word)
+        return '-'.join(result)
 
+if __name__ == '__main__':
+    
+    s = 'Linux非阻塞编程'
+    t = TitleTranslation()
+    print t.translate(s)
 
-if __name__ == "__main__":
-    test = PinYin()
-    test.load_word()
-    string = "钓鱼岛是中国的"
-    print "in: %s" % string
-    print "out: %s" % str(test.hanzi2pinyin(string=string))
-    print "out: %s" % test.hanzi2pinyin_split(string=string, split="-")
