@@ -1,6 +1,6 @@
 #coding: utf-8
 import xml.etree.cElementTree as ET
-from utils import translationToMarkdown
+from html_utils import translationToMarkdown
 from datetime import datetime
 
 class ParseCnblogsToMarkdown:
@@ -39,7 +39,7 @@ class ParseCnblogsToMarkdown:
 			day = create_time.day
 			title = '%s-%s-%s-%s' % (year, month, day, item['title'])
 			print title
-			
+
 
 
 if __name__ == '__main__':
