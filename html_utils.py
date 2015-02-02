@@ -6,12 +6,12 @@ def filterParaTag(html):
 	def filterPTagCallbackByLine(content):
 		inner_text = re.findall('<strong><font.*?>(.*?[\s\S]*?)</font></strong>', content)
 		assert inner_text and len(inner_text) == 1
-		text = '''%s\n========''' % (inner_text[0])
+		text = '''\n###%s\n''' % (inner_text[0])
 		return text
 	def filterPTagCallbackByLine2(content):
 		inner_text = re.findall('<font.*?><strong>(.*?[\s\S]*?)</strong></font>', content)
 		assert inner_text and len(inner_text) == 1
-		text = '''%s\n========''' % (inner_text[0])
+		text = '''\n###%s\n''' % (inner_text[0])
 		return text
 
 	def filterPTagCallback(matchobj):
@@ -25,7 +25,7 @@ def filterParaTag(html):
 			return filterPTagCallbackByLine(inner_text)
 		elif re.match('<font.*?><strong>(.*?[\s\S]*?)</strong></font>', inner_text):
 			return filterPTagCallbackByLine2(inner_text)
-		return inner_text #原样返回
+		return inner_text+'\n' #原样返回
 	return re.sub('<p>(.*?[\s\S]*?)</p>', filterPTagCallback, html)
 
 if __name__ == '__main__#':
@@ -51,6 +51,8 @@ def divToCode(html):
 			return 'xml'
 		elif 'form' in code or 'html' in code:
 			return 'html'
+		elif 'java' in code:
+			return 'java'
 		return 'C++'
 	def divToCodeCallback(matchobj):
 		text = matchobj.group()
@@ -61,7 +63,7 @@ def divToCode(html):
 		code = translationHtmlEntries(inner_text[0])
 		code_type = judgeTypeOfCode(code)
 		result = '''
-```%s
+\n```%s
 %s
 ```
 		''' % (code_type, code)
