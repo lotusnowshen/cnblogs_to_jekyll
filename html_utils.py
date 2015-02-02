@@ -1,13 +1,6 @@
 #coding: utf-8
 import re
 
-#过滤掉p标签，如果其中含有strong标签，将其转化为markdown的加粗语法
-'''
-这里必须判断是不是整段加粗
-<p><strong><font size="4">yield的使用</font></strong></p>
-<p><font color="#ff0000">当函数体执行到yield时，便退出这个函数</font>，此时yield具有return的功能。但是这里的关键是，当下次执行这个函数时，<font color="#ff0000"><strong>并不是从头开始执行，而是从上次yield退出的位置继续执行</strong></font>。</p>
-<p><font size="4"><strong>xrange的模拟实现</strong></font></p>
-'''
 def filterParaTag(html):
 	#整段加粗
 	def filterPTagCallbackByLine(content):
@@ -23,7 +16,7 @@ def filterParaTag(html):
 
 	def filterPTagCallback(matchobj):
 		text = matchobj.group() #去除p内部的文本
-		print text
+		#print text
 		assert text
 		inner_text = re.findall('<p>(.*?[\s\S]*?)</p>', text)
 		assert inner_text and len(inner_text) == 1
